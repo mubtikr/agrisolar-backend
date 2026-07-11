@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-agrisolar}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-agrisolar_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-agrisolar}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-agrisolar} -d ${POSTGRES_DB:-agrisolar}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mosquitto:
+        condition: service_started
+    environment:
+      DATABASE_URL: postgresql://agrisolar:agrisolar_dev@postgres:5432/agrisolar
+      MQTT_URL: mqtt://mosquitto:1883
+      JWT_SECRET: ${JWT_SECRET:-dev_jwt_secret_key_change_in_production}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-24h}
+      POSTGRES_USER: ${POSTGRES_USER:-agrisolar}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-agrisolar_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-agrisolar}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-admin@farm.com}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-FarmAdmin2026!}
+
+volumes:
+  postgres_data:

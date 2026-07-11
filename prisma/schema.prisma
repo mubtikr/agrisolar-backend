@@ -1,0 +1,31 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+}
+
+model SensorTelemetry {
+  id             String   @id @default(uuid())
+  deviceId       String
+  soilPercent    Int
+  airTemp        Float
+  humidity       Float
+  waterTemp      Float
+  rainDetected   Boolean
+  motionDetected Boolean  @default(false)
+  pumpState      Boolean
+  timestamp      DateTime @default(now())
+
+  @@index([deviceId, timestamp])
+}
