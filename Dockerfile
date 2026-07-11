@@ -7,7 +7,7 @@ RUN apk add --no-cache openssl
 
 COPY package.json package-lock.json ./
 
-RUN npm ci --only=production
+RUN npm ci
 
 COPY . .
 

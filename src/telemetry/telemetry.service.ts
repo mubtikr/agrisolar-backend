@@ -14,6 +14,7 @@ export class TelemetryService {
       data: {
         deviceId,
         soilPercent: dto.soilPercent,
+        tankWaterLevel: dto.tankWaterLevel ?? 0,
         airTemp: dto.airTemp,
         humidity: dto.humidity,
         waterTemp: dto.waterTemp,

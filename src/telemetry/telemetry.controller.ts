@@ -18,6 +18,7 @@ export class TelemetryController {
       const dto = new SensorTelemetryDto();
       dto.deviceId = payload.deviceId || deviceId;
       dto.soilPercent = payload.soilPercent;
+      dto.tankWaterLevel = payload.tankWaterLevel ?? 0;
       dto.airTemp = payload.airTemp;
       dto.humidity = payload.humidity;
       dto.waterTemp = payload.waterTemp;

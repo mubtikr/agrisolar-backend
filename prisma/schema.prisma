@@ -16,16 +16,17 @@ model User {
 }
 
 model SensorTelemetry {
-  id             String   @id @default(uuid())
-  deviceId       String
-  soilPercent    Int
-  airTemp        Float
-  humidity       Float
-  waterTemp      Float
-  rainDetected   Boolean
-  motionDetected Boolean  @default(false)
-  pumpState      Boolean
-  timestamp      DateTime @default(now())
+  id              String   @id @default(uuid())
+  deviceId        String
+  soilPercent     Int
+  tankWaterLevel  Int      @default(0)
+  airTemp         Float
+  humidity        Float
+  waterTemp       Float
+  rainDetected    Boolean
+  motionDetected  Boolean  @default(false)
+  pumpState       Boolean
+  timestamp       DateTime @default(now())
 
   @@index([deviceId, timestamp])
 }

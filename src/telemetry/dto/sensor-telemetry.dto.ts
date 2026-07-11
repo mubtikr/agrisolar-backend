@@ -18,6 +18,11 @@ export class SensorTelemetryDto {
   @Max(100)
   soilPercent: number;
 
+  @IsInt()
+  @Min(0)
+  @Max(100)
+  tankWaterLevel: number;
+
   @IsNumber()
   airTemp: number;
 
