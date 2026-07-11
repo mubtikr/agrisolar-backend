@@ -26,7 +26,11 @@ async function bootstrap() {
     },
   });
 
-  await app.startAllMicroservices();
+  try {
+    await app.startAllMicroservices();
+  } catch (err) {
+    console.warn('MQTT microservice failed to start, HTTP server will continue:', err.message);
+  }
   await app.listen(3000);
 
   console.log('NestJS Hybrid Application Running on Port 3000 (HTTP + MQTT Listener)');
